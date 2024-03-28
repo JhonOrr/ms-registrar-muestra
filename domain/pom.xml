@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.labsoluciones</groupId>
-        <artifactId>laboratorio-lubricante</artifactId>
+        <artifactId>registrar-muestra</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
     <artifactId>domain</artifactId>
