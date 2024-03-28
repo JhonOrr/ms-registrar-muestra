@@ -9,6 +9,9 @@ import org.springframework.stereotype.Service;
 public class EquipoMapper {
     private static final ModelMapper modelMapper = new ModelMapper();
     public EquipoDTO mapToDto(EquipoEntity entity) {
-        return modelMapper.map(entity, EquipoDTO.class);
+        EquipoDTO equipoDTO = new EquipoDTO();
+        equipoDTO = modelMapper.map(entity, EquipoDTO.class);
+        equipoDTO.setCliente(entity.getCliente().getRazonSocial());
+        return equipoDTO;
     }
 }

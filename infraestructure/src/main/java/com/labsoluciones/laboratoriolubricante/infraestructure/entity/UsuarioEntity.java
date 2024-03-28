@@ -37,6 +37,10 @@ public class UsuarioEntity {
     private String usuaDelet;
     @Column(name = "date_delete")
     private Timestamp dateDelet;
+    @Column(name="password")
+    private String password;
+    @Column(name="role")
+    private String role;
 
     // Relacion con cliente
     @ManyToOne(optional = false)
