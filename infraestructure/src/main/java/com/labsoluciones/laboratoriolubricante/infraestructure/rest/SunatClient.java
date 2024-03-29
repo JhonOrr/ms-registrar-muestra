@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @FeignClient(name="sunat-client", url="https://api.apis.net.pe/v2/sunat/")
 public interface SunatClient {
-    @GetMapping("/ruc")
+    @GetMapping("/ruc/full")
     ResponseSunat getInfo(
             @RequestParam("numero") String numero,
             @RequestHeader("Authorization") String token
