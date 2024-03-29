@@ -37,6 +37,18 @@ public class EquipoAdapter implements EquipoServiceOut {
     }
 
     @Override
+    public List<EquipoDTO> obtenerEquiposPorCliente(Long idCliente) {
+        List<EquipoDTO> equipoDTOList = new ArrayList<>();
+        ClienteEntity cliente = clienteRepository.findById(idCliente).orElse(null);
+        List<EquipoEntity> entities = equipoRepository.findByCliente(cliente);
+        for (EquipoEntity equipo : entities) {
+            EquipoDTO equipoDTO = equipoMapper.mapToDto(equipo);
+            equipoDTOList.add(equipoDTO);
+        }
+        return equipoDTOList;
+    }
+
+    @Override
     public List<EquipoDTO> obtenerTodosOut() {
         List<EquipoDTO> equipoDTOList = new ArrayList<>();
         List<EquipoEntity> entities = equipoRepository.findAll();
@@ -72,6 +84,7 @@ public class EquipoAdapter implements EquipoServiceOut {
     }
 
     private EquipoEntity getEntity(RequestEquipo requestEquipo) {
+
         ClienteEntity cliente = clienteRepository.findByRazonSocial(requestEquipo.getNombreCliente());
 
         EquipoEntity entity = new EquipoEntity();
@@ -82,6 +95,7 @@ public class EquipoAdapter implements EquipoServiceOut {
         entity.setUsuaCrea(Constants.AUDIT_ADMIN);
         entity.setDateCreate(getTimestamp());
         entity.setCliente(cliente);
+
         return entity;
     }
 

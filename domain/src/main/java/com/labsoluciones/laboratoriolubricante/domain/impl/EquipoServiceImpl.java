@@ -25,6 +25,7 @@ public class EquipoServiceImpl implements EquipoServiceIn {
         return equipoServiceOut.obtenerEquipoOut(id);
     }
 
+
     @Override
     public List<EquipoDTO> obtenerTodosIn() {
         return equipoServiceOut.obtenerTodosOut();
@@ -38,5 +39,10 @@ public class EquipoServiceImpl implements EquipoServiceIn {
     @Override
     public EquipoDTO deleteIn(Long id) {
         return equipoServiceOut.deleteOut(id);
+    }
+
+    @Override
+    public List<EquipoDTO> obtenerEquiposPorCliente(Long idCliente) {
+        return equipoServiceOut.obtenerEquiposPorCliente(idCliente);
     }
 }

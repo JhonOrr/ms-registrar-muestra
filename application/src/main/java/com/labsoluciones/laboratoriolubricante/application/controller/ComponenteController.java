@@ -27,6 +27,12 @@ public class ComponenteController {
 
     }
 
+    @GetMapping("/delEquipo/{idEquipo}")
+    public ResponseEntity<List<ComponenteDTO>> obtenerComponentesPorEquipo(@PathVariable Long idEquipo) {
+        List<ComponenteDTO> componentes = componenteServiceIn.obtenerComponentesPorEquipo(idEquipo);
+        return ResponseEntity.ok(componentes);
+    }
+
     @GetMapping
     public ResponseEntity<List<ComponenteDTO>> obtenerTodos () {
         return ResponseEntity

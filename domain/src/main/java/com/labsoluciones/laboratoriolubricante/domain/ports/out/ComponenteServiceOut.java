@@ -10,6 +10,9 @@ import java.util.Optional;
 public interface ComponenteServiceOut {
     ComponenteDTO crearComponenteOut(RequestComponente requestComponente);
     Optional<ComponenteDTO> obtenerComponenteOut(Long id);
+
+    List<ComponenteDTO> obtenerComponentesPorEquipo(Long idEquipo);
+
     List<ComponenteDTO> obtenerTodosOut();
     ComponenteDTO actualizarOut(Long id, RequestComponente requestComponente);
     ComponenteDTO deleteOut(Long id);

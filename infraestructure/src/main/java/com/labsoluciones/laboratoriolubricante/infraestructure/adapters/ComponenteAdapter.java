@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,6 +34,18 @@ public class ComponenteAdapter implements ComponenteServiceOut {
     @Override
     public Optional<ComponenteDTO> obtenerComponenteOut(Long id) {
         return Optional.ofNullable(componenteMapper.mapToDto(componenteRepository.findById(id).get()));
+    }
+
+    @Override
+    public List<ComponenteDTO> obtenerComponentesPorEquipo(Long idEquipo) {
+        List<ComponenteDTO> componenteDTOList = new ArrayList<>();
+        EquipoEntity equipo = equipoRepository.findById(idEquipo).orElse(null);
+        List<ComponenteEntity> entities = componenteRepository.findByEquipo(equipo);
+        for (ComponenteEntity componente : entities) {
+            ComponenteDTO componenteDTO = componenteMapper.mapToDto(componente);
+            componenteDTOList.add(componenteDTO);
+        }
+        return componenteDTOList;
     }
 
     @Override

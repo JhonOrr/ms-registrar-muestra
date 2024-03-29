@@ -13,4 +13,6 @@ public interface ComponenteServiceIn {
     List<ComponenteDTO> obtenerTodosIn();
     ComponenteDTO actualizarIn(Long id, RequestComponente requestComponente);
     ComponenteDTO deleteIn(Long id);
+
+    List<ComponenteDTO> obtenerComponentesPorEquipo(Long idEquipo);
 }

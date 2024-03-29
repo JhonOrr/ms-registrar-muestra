@@ -1,5 +1,6 @@
 package com.labsoluciones.laboratoriolubricante.domain.ports.in;
 
+import com.labsoluciones.laboratoriolubricante.domain.aggregates.dto.ComponenteDTO;
 import com.labsoluciones.laboratoriolubricante.domain.aggregates.dto.EquipoDTO;
 import com.labsoluciones.laboratoriolubricante.domain.aggregates.request.RequestEquipo;
 
@@ -12,4 +13,6 @@ public interface EquipoServiceIn {
     List<EquipoDTO> obtenerTodosIn();
     EquipoDTO actualizarIn(Long id, RequestEquipo requestEquipo);
     EquipoDTO deleteIn(Long id);
+
+    List<EquipoDTO> obtenerEquiposPorCliente(Long idCliente);
 }

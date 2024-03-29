@@ -40,4 +40,9 @@ public class ComponenteServiceImpl implements ComponenteServiceIn {
     public ComponenteDTO deleteIn(Long id) {
         return componenteServiceOut.deleteOut(id);
     }
+
+    @Override
+    public List<ComponenteDTO> obtenerComponentesPorEquipo(Long idEquipo) {
+        return componenteServiceOut.obtenerComponentesPorEquipo(idEquipo);
+    }
 }

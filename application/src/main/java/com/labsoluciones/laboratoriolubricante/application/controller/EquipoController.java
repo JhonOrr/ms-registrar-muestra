@@ -1,5 +1,6 @@
 package com.labsoluciones.laboratoriolubricante.application.controller;
 
+import com.labsoluciones.laboratoriolubricante.domain.aggregates.dto.ComponenteDTO;
 import com.labsoluciones.laboratoriolubricante.domain.aggregates.dto.EquipoDTO;
 import com.labsoluciones.laboratoriolubricante.domain.aggregates.request.RequestEquipo;
 import com.labsoluciones.laboratoriolubricante.domain.ports.in.EquipoServiceIn;
@@ -22,6 +23,12 @@ public class EquipoController {
                 .status(HttpStatus.CREATED)
                 .body(equipoServiceIn.crearEquipoIn(requestEquipo));
 
+    }
+
+    @GetMapping("/delCliente/{idCliente}")
+    public ResponseEntity<List<EquipoDTO>> obtenerEquiposPorCliente(@PathVariable Long idCliente) {
+        List<EquipoDTO> equipos = equipoServiceIn.obtenerEquiposPorCliente(idCliente);
+        return ResponseEntity.ok(equipos);
     }
 
     @GetMapping
