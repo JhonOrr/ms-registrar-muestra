@@ -21,8 +21,8 @@ public class ClienteServiceImpl implements ClienteServiceIn {
     }
 
     @Override
-    public Optional<ClienteDTO> obtenerClienteIn(String ruc) {
-        return clienteServiceOut.obtenerClienteOut(ruc);
+    public Optional<ClienteDTO> obtenerClienteIn(Long id) {
+        return clienteServiceOut.obtenerClienteOut(id);
     }
 
     @Override
