@@ -25,6 +25,13 @@ public class ClienteController {
 
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<ClienteDTO> obtenerCliente(@PathVariable Long id) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(clienteServiceIn.obtenerClienteIn(id).get());
+    }
+
     @GetMapping
     public ResponseEntity<List<ClienteDTO>> obtenerTodos () {
         return ResponseEntity

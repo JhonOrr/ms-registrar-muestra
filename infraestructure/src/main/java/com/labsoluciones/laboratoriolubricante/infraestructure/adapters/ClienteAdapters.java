@@ -7,8 +7,10 @@ import com.labsoluciones.laboratoriolubricante.domain.aggregates.request.Request
 import com.labsoluciones.laboratoriolubricante.domain.ports.out.ClienteServiceOut;
 import com.labsoluciones.laboratoriolubricante.infraestructure.entity.ClienteEntity;
 import com.labsoluciones.laboratoriolubricante.infraestructure.mapper.ClienteMapper;
+import com.labsoluciones.laboratoriolubricante.infraestructure.redis.RedisService;
 import com.labsoluciones.laboratoriolubricante.infraestructure.repository.ClienteRepository;
 import com.labsoluciones.laboratoriolubricante.infraestructure.rest.SunatClient;
+import com.labsoluciones.laboratoriolubricante.infraestructure.util.Util;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -24,6 +26,8 @@ public class ClienteAdapters implements ClienteServiceOut {
     private final ClienteRepository clienteRepository;
     private final ClienteMapper clienteMapper;
     private final SunatClient sunatClient;
+    private final RedisService redisService;
+    private final Util util;
 
     @Value("${token.api}")
     private String tokenApi;
@@ -34,8 +38,17 @@ public class ClienteAdapters implements ClienteServiceOut {
     }
 
     @Override
-    public Optional<ClienteDTO> obtenerClienteOut(String ruc) {
-        return null;
+    public Optional<ClienteDTO> obtenerClienteOut(Long id) {
+        String redisInfo = redisService.getFromRedis(Constants.REDIS_KEY_PERSONA+id);
+        if (redisInfo != null) {
+            ClienteDTO clienteDTO = util.convertFromJson(redisInfo, ClienteDTO.class);
+            return Optional.of(clienteDTO);
+        } else {
+            ClienteDTO dto = clienteMapper.mapToDto(clienteRepository.findById(id).get());
+            String redis = util.convertToJson(dto);
+            redisService.saveInRedis(Constants.REDIS_KEY_PERSONA+id,redis,1);
+            return Optional.of(dto);
+        }
     }
 
     @Override

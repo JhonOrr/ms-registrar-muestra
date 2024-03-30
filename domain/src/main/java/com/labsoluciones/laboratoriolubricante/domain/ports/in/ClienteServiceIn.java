@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface ClienteServiceIn {
     ClienteDTO crearClienteIn(RequestCliente requestCliente);
-    Optional<ClienteDTO> obtenerClienteIn(String ruc);
+    Optional<ClienteDTO> obtenerClienteIn(Long id);
     List<ClienteDTO> obtenerTodosIn();
     ClienteDTO actualizarIn(Long id, RequestCliente requestCliente);
     ClienteDTO deleteIn(Long id);
