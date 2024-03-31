@@ -1,6 +1,5 @@
 package com.labsoluciones.laboratoriolubricante.application.controller;
 
-import com.labsoluciones.laboratoriolubricante.domain.aggregates.dto.ComponenteDTO;
 import com.labsoluciones.laboratoriolubricante.domain.aggregates.dto.EquipoDTO;
 import com.labsoluciones.laboratoriolubricante.domain.aggregates.request.RequestEquipo;
 import com.labsoluciones.laboratoriolubricante.domain.ports.in.EquipoServiceIn;
@@ -17,12 +16,12 @@ import java.util.List;
 public class EquipoController {
     private final EquipoServiceIn equipoServiceIn;
 
-    @PostMapping
-    public ResponseEntity<EquipoDTO> registrar(@RequestBody RequestEquipo requestEquipo) {
+    @PostMapping()
+    public ResponseEntity<EquipoDTO> registrar(@RequestBody RequestEquipo requestEquipo,
+                                               @RequestHeader("loggedInUser") String username) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(equipoServiceIn.crearEquipoIn(requestEquipo));
-
+                .body(equipoServiceIn.crearEquipoIn(requestEquipo, username));
     }
 
     @GetMapping("/delCliente/{idCliente}")
@@ -31,11 +30,11 @@ public class EquipoController {
         return ResponseEntity.ok(equipos);
     }
 
-    @GetMapping
-    public ResponseEntity<List<EquipoDTO>> obtenerTodos () {
+    @GetMapping("/todos")
+    public ResponseEntity<List<EquipoDTO>> obtenerTodos (@RequestHeader("loggedInUser") String username) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(equipoServiceIn.obtenerTodosIn());
+                .body(equipoServiceIn.obtenerTodosIn(username));
     }
 
     @PutMapping("/{id}")

@@ -15,17 +15,19 @@ public class MuestraEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_muestra")
     private Long idMuestra;
-    @Column(name = "viscosidad", nullable = false)
-    private String viscosidad;
-    @Column(name = "oxidacion", nullable = false)
-    private String oxidacion;
-    @Column(name = "nitracion", nullable = false)
-    private String nitracion;
-    @Column(name = "agua", nullable = false)
-    private String agua;
-
     @Column(name = "estado", nullable = false)
     private Integer estado;
+
+    @Column(name = "viscocidad")
+    private Double viscosidad;
+    @Column(name = "oxidacion")
+    private Double oxidacion;
+    @Column(name = "nitracion")
+    private Double nitracion;
+    @Column(name = "agua")
+    private Double agua;
+
+
     @Column(name = "usua_create", length = 45)
     private String usuaCrea;
     @Column(name = "date_create")

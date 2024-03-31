@@ -11,7 +11,6 @@ public class EquipoMapper {
     public EquipoDTO mapToDto(EquipoEntity entity) {
         EquipoDTO equipoDTO = new EquipoDTO();
         equipoDTO = modelMapper.map(entity, EquipoDTO.class);
-        equipoDTO.setCliente(entity.getCliente().getRazonSocial());
         return equipoDTO;
     }
 }

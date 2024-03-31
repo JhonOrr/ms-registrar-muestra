@@ -17,8 +17,11 @@ public class SolicitudEntity {
     private Long idSolicitud;
     @Column(name = "estado", nullable = false)
     private Integer estado;
-//    @Column(name = "usua_create", length = 45)
-//    private String usuaCrea;
+
+    @Column(name="fecha_arribo")
+    private Timestamp fechaArribo;
+    @Column(name = "fecha_fin")
+    private Timestamp fechaFin;
     @Column(name = "date_create")
     private Timestamp dateCreate;
     @Column(name = "usua_modif", length = 45)

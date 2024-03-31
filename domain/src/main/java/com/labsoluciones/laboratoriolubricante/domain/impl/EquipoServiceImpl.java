@@ -16,8 +16,8 @@ public class EquipoServiceImpl implements EquipoServiceIn {
     private final EquipoServiceOut equipoServiceOut;
 
     @Override
-    public EquipoDTO crearEquipoIn(RequestEquipo requestEquipo) {
-        return equipoServiceOut.crearEquipoOut(requestEquipo);
+    public EquipoDTO crearEquipoIn(RequestEquipo requestEquipo, String username) {
+        return equipoServiceOut.crearEquipoOut(requestEquipo, username);
     }
 
     @Override
@@ -27,8 +27,8 @@ public class EquipoServiceImpl implements EquipoServiceIn {
 
 
     @Override
-    public List<EquipoDTO> obtenerTodosIn() {
-        return equipoServiceOut.obtenerTodosOut();
+    public List<EquipoDTO> obtenerTodosIn(String username) {
+        return equipoServiceOut.obtenerTodosOut(username);
     }
 
     @Override

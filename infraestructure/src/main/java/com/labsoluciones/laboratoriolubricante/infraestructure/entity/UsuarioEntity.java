@@ -42,13 +42,11 @@ public class UsuarioEntity {
         @Column(name="password")
         private String password;
         @Column(name="role")
-        private Role role;
+        private String role;
         @Column(name="email")
         private String email;
         // Relacion con cliente
         @ManyToOne(optional = false)
         @JoinColumn(name = "id_cliente")
         private ClienteEntity cliente;
-
-
 }

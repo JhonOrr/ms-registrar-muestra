@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class ComponenteMapper {
     private static final ModelMapper modelMapper = new ModelMapper();
-
     public ComponenteDTO mapToDto(ComponenteEntity entity) {
         return modelMapper.map(entity, ComponenteDTO.class);
     }

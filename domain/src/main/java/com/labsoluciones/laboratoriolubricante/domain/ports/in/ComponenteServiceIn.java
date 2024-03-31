@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ComponenteServiceIn {
-    ComponenteDTO crearComponenteIn(RequestComponente requestComponente);
+    ComponenteDTO crearComponenteIn(RequestComponente requestComponente, String username);
     Optional<ComponenteDTO> obtenerComponenteIn(Long id);
     List<ComponenteDTO> obtenerTodosIn();
     ComponenteDTO actualizarIn(Long id, RequestComponente requestComponente);

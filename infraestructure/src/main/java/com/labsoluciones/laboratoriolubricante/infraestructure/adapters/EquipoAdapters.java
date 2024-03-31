@@ -6,9 +6,11 @@ import com.labsoluciones.laboratoriolubricante.domain.aggregates.request.Request
 import com.labsoluciones.laboratoriolubricante.domain.ports.out.EquipoServiceOut;
 import com.labsoluciones.laboratoriolubricante.infraestructure.entity.ClienteEntity;
 import com.labsoluciones.laboratoriolubricante.infraestructure.entity.EquipoEntity;
+import com.labsoluciones.laboratoriolubricante.infraestructure.entity.UsuarioEntity;
 import com.labsoluciones.laboratoriolubricante.infraestructure.mapper.EquipoMapper;
 import com.labsoluciones.laboratoriolubricante.infraestructure.repository.ClienteRepository;
 import com.labsoluciones.laboratoriolubricante.infraestructure.repository.EquipoRepository;
+import com.labsoluciones.laboratoriolubricante.infraestructure.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,16 +21,17 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class EquipoAdapter implements EquipoServiceOut {
+public class EquipoAdapters implements EquipoServiceOut {
 
     private final EquipoRepository equipoRepository;
     private final ClienteRepository clienteRepository;
     private final EquipoMapper equipoMapper;
+    private final UsuarioRepository usuarioRepository;
 
     @Override
-    public EquipoDTO crearEquipoOut(RequestEquipo requestEquipo) {
-        equipoRepository.save(getEntity(requestEquipo));
-        return equipoMapper.mapToDto(getEntity(requestEquipo));
+    public EquipoDTO crearEquipoOut(RequestEquipo requestEquipo, String username) {
+        equipoRepository.save(getEntity(requestEquipo, username));
+        return equipoMapper.mapToDto(getEntity(requestEquipo, username));
     }
 
     @Override
@@ -49,9 +52,11 @@ public class EquipoAdapter implements EquipoServiceOut {
     }
 
     @Override
-    public List<EquipoDTO> obtenerTodosOut() {
+    public List<EquipoDTO> obtenerTodosOut(String username) {
         List<EquipoDTO> equipoDTOList = new ArrayList<>();
-        List<EquipoEntity> entities = equipoRepository.findAll();
+        Optional<UsuarioEntity> usuario = usuarioRepository.findByEmail(username);
+        ClienteEntity cliente = usuario.get().getCliente();
+        List<EquipoEntity> entities = equipoRepository.findByCliente(cliente);
         for (EquipoEntity equipo : entities) {
             EquipoDTO equipoDTO = equipoMapper.mapToDto(equipo);
             equipoDTOList.add(equipoDTO);
@@ -83,24 +88,26 @@ public class EquipoAdapter implements EquipoServiceOut {
         return null;
     }
 
-    private EquipoEntity getEntity(RequestEquipo requestEquipo) {
+    private EquipoEntity getEntity(RequestEquipo requestEquipo, String username) {
 
-        ClienteEntity cliente = clienteRepository.findByRazonSocial(requestEquipo.getNombreCliente());
+        //ClienteEntity cliente = clienteRepository.findByRazonSocial(requestEquipo.getNombreCliente());
 
         EquipoEntity entity = new EquipoEntity();
         entity.setNomEquipo(requestEquipo.getNombreEquipo());
         entity.setMarca(requestEquipo.getMarcaEquipo());
         entity.setModelo(requestEquipo.getModeloEquipo());
         entity.setEstado(Constants.STATUS_ACTIVE);
-        entity.setUsuaCrea(Constants.AUDIT_ADMIN);
+
+        entity.setUsuaCrea(usuarioRepository.findByEmail(username).get().getIdUsuario().toString());
+
         entity.setDateCreate(getTimestamp());
-        entity.setCliente(cliente);
+        entity.setCliente(usuarioRepository.findByEmail(username).get().getCliente());
 
         return entity;
     }
 
     private EquipoEntity getEntityUpdate (EquipoEntity equipoActualizar, RequestEquipo requestEquipo) {
-        ClienteEntity cliente = clienteRepository.findByRazonSocial(requestEquipo.getNombreCliente());
+//        ClienteEntity cliente = clienteRepository.findByRazonSocial(requestEquipo.getNombreCliente());
 
         equipoActualizar.setNomEquipo(requestEquipo.getNombreEquipo());
         equipoActualizar.setMarca(requestEquipo.getMarcaEquipo());
@@ -108,7 +115,7 @@ public class EquipoAdapter implements EquipoServiceOut {
         equipoActualizar.setEstado(Constants.STATUS_ACTIVE);
         equipoActualizar.setUsuaModif(Constants.AUDIT_ADMIN);
         equipoActualizar.setDateModif(getTimestamp());
-        equipoActualizar.setCliente(cliente);
+//        equipoActualizar.setCliente(cliente);
         return equipoActualizar;
     }
 

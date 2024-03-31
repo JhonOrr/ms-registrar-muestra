@@ -9,5 +9,4 @@ public class RequestEquipo {
     private String nombreEquipo;
     private String marcaEquipo;
     private String modeloEquipo;
-    private String nombreCliente;
 }

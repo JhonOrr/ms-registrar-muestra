@@ -4,11 +4,14 @@ import com.labsoluciones.laboratoriolubricante.domain.aggregates.constansts.Cons
 import com.labsoluciones.laboratoriolubricante.domain.aggregates.dto.ComponenteDTO;
 import com.labsoluciones.laboratoriolubricante.domain.aggregates.request.RequestComponente;
 import com.labsoluciones.laboratoriolubricante.domain.ports.out.ComponenteServiceOut;
+import com.labsoluciones.laboratoriolubricante.infraestructure.entity.ClienteEntity;
 import com.labsoluciones.laboratoriolubricante.infraestructure.entity.ComponenteEntity;
 import com.labsoluciones.laboratoriolubricante.infraestructure.entity.EquipoEntity;
+import com.labsoluciones.laboratoriolubricante.infraestructure.entity.UsuarioEntity;
 import com.labsoluciones.laboratoriolubricante.infraestructure.mapper.ComponenteMapper;
 import com.labsoluciones.laboratoriolubricante.infraestructure.repository.ComponenteRepository;
 import com.labsoluciones.laboratoriolubricante.infraestructure.repository.EquipoRepository;
+import com.labsoluciones.laboratoriolubricante.infraestructure.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -25,12 +28,26 @@ public class ComponenteAdapter implements ComponenteServiceOut {
     private final ComponenteRepository componenteRepository;
     private final EquipoRepository equipoRepository;
     private final ComponenteMapper componenteMapper;
+    private final UsuarioRepository usuarioRepository;
     @Override
-    public ComponenteDTO crearComponenteOut(RequestComponente requestComponente) {
-        componenteRepository.save(getEntity(requestComponente));
-        return componenteMapper.mapToDto(getEntity(requestComponente));
+    public ComponenteDTO crearComponenteOut(RequestComponente requestComponente, String username) {
+        EquipoEntity equipo = equipoRepository.findById(requestComponente.getIdEquipo()).get();
+        List<EquipoEntity> equiposPermitidos = obtenerEquiposPermitidos(username);
+        if(equiposPermitidos.contains(equipo)){
+            componenteRepository.save(getEntity(requestComponente));
+            return componenteMapper.mapToDto(getEntity(requestComponente));
+        } else {
+            throw  new RuntimeException("Equipo incorrecto");
+        }
+
     }
 
+    private List<EquipoEntity> obtenerEquiposPermitidos(String username){
+        UsuarioEntity usuario = usuarioRepository.findByEmail(username).get();
+        ClienteEntity cliente = usuario.getCliente();
+        List<EquipoEntity> equiposPermitidos = equipoRepository.findByCliente(cliente);
+        return equiposPermitidos;
+    }
     @Override
     public Optional<ComponenteDTO> obtenerComponenteOut(Long id) {
         return Optional.ofNullable(componenteMapper.mapToDto(componenteRepository.findById(id).get()));
@@ -84,23 +101,24 @@ public class ComponenteAdapter implements ComponenteServiceOut {
     }
 
     private ComponenteEntity getEntity(RequestComponente requestComponente) {
-        EquipoEntity equipo = equipoRepository.findByNomEquipo(requestComponente.getNombreEquipo());
+//        EquipoEntity equipo = equipoRepository.findByNomEquipo(requestComponente.getNombreEquipo());
 
         ComponenteEntity entity = new ComponenteEntity();
         entity.setNomComponente(requestComponente.getNombreComponente());
-        entity.setEquipo(equipo);
+//        entity.setEquipo(equipo);
         entity.setEstado(Constants.STATUS_ACTIVE);
         entity.setUsuaCrea(Constants.AUDIT_ADMIN);
         entity.setDateCreate(getTimestamp());
+        entity.setEquipo(equipoRepository.findById(requestComponente.getIdEquipo()).get());
         return entity;
     }
 
     private ComponenteEntity getEntityUpdate(ComponenteEntity componenteActualizar,  RequestComponente requestComponente) {
-        EquipoEntity equipo = equipoRepository.findByNomEquipo(requestComponente.getNombreEquipo());
+//        EquipoEntity equipo = equipoRepository.findByNomEquipo(requestComponente.getNombreEquipo());
 
         ComponenteEntity entity = new ComponenteEntity();
         entity.setNomComponente(requestComponente.getNombreComponente());
-        entity.setEquipo(equipo);
+//        entity.setEquipo(equipo);
         entity.setEstado(Constants.STATUS_ACTIVE);
         entity.setUsuaModif(Constants.AUDIT_ADMIN);
         entity.setDateModif(getTimestamp());

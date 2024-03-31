@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ComponenteServiceOut {
-    ComponenteDTO crearComponenteOut(RequestComponente requestComponente);
+    ComponenteDTO crearComponenteOut(RequestComponente requestComponente, String username);
     Optional<ComponenteDTO> obtenerComponenteOut(Long id);
 
     List<ComponenteDTO> obtenerComponentesPorEquipo(Long idEquipo);

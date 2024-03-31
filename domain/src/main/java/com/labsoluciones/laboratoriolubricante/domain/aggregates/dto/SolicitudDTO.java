@@ -1,26 +1,22 @@
 package com.labsoluciones.laboratoriolubricante.domain.aggregates.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.persistence.*;
+import lombok.Data;
 
 import java.sql.Timestamp;
 
-@Getter
-@Setter
+@Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class EquipoDTO {
-    private Long idEquipo;
-    private String nomEquipo;
-    private String marca;
-    private String modelo;
+public class SolicitudDTO {
+    private Long idSolicitud;
     private Integer estado;
     private String usuaCrea;
+    private Timestamp fechaArribo;
     private Timestamp dateCreate;
     private String usuaModif;
     private Timestamp dateModif;
     private String usuaDelet;
     private Timestamp dateDelet;
-    private String clienteRazonSocial;
-
+    private int usuario;
 }

@@ -20,10 +20,18 @@ public class ComponenteController {
     private final ComponenteServiceIn componenteServiceIn;
 
     @PostMapping
-    public ResponseEntity<ComponenteDTO> registrar(@RequestBody RequestComponente requestComponente) {
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(componenteServiceIn.crearComponenteIn(requestComponente));
+    public ResponseEntity<?> registrar(@RequestBody RequestComponente requestComponente,
+                                                   @RequestHeader("loggedInUser") String username) {
+        try{
+            return ResponseEntity
+                    .status(HttpStatus.CREATED)
+                    .body(componenteServiceIn.crearComponenteIn(requestComponente, username));
+        }catch (RuntimeException e){
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body("Equipo Incorrecto");
+        }
+
 
     }
 

@@ -39,4 +39,9 @@ public class ClienteController {
                 .body(clienteServiceIn.obtenerTodosIn());
     }
 
+    @GetMapping("/test")
+    public String testController(@RequestHeader("loggedInUser") String username){
+        return "bienvenido" + username;
+    }
+
 }

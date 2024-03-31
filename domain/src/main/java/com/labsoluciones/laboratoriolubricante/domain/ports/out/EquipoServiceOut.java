@@ -8,12 +8,12 @@ import java.util.List;
 import java.util.Optional;
 
 public interface EquipoServiceOut {
-    EquipoDTO crearEquipoOut(RequestEquipo requestEquipo);
+    EquipoDTO crearEquipoOut(RequestEquipo requestEquipo, String username);
     Optional<EquipoDTO> obtenerEquipoOut(Long id);
 
     List<EquipoDTO> obtenerEquiposPorCliente(Long idCliente);
 
-    List<EquipoDTO> obtenerTodosOut();
+    List<EquipoDTO> obtenerTodosOut(String username);
     EquipoDTO actualizarOut(Long id, RequestEquipo requestEquipo);
     EquipoDTO deleteOut(Long id);
 }

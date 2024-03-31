@@ -17,8 +17,8 @@ public class ComponenteServiceImpl implements ComponenteServiceIn {
     private final ComponenteServiceOut componenteServiceOut;
 
     @Override
-    public ComponenteDTO crearComponenteIn(RequestComponente requestComponente) {
-        return componenteServiceOut.crearComponenteOut(requestComponente);
+    public ComponenteDTO crearComponenteIn(RequestComponente requestComponente, String username) {
+        return componenteServiceOut.crearComponenteOut(requestComponente, username);
     }
 
     @Override
