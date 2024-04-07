@@ -9,11 +9,8 @@ import java.util.Optional;
 
 public interface EquipoServiceOut {
     EquipoDTO crearEquipoOut(RequestEquipo requestEquipo, String username);
-    Optional<EquipoDTO> obtenerEquipoOut(Long id);
-
-    List<EquipoDTO> obtenerEquiposPorCliente(Long idCliente);
-
+    Optional<EquipoDTO> obtenerEquipoOut(Long id, String username);
     List<EquipoDTO> obtenerTodosOut(String username);
-    EquipoDTO actualizarOut(Long id, RequestEquipo requestEquipo);
-    EquipoDTO deleteOut(Long id);
+    EquipoDTO actualizarOut(Long id, RequestEquipo requestEquipo, String username);
+    String deleteOut(Long id, String username);
 }

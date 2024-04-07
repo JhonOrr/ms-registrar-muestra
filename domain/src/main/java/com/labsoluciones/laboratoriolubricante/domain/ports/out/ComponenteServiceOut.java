@@ -11,9 +11,8 @@ public interface ComponenteServiceOut {
     ComponenteDTO crearComponenteOut(RequestComponente requestComponente, String username);
     Optional<ComponenteDTO> obtenerComponenteOut(Long id);
 
-    List<ComponenteDTO> obtenerComponentesPorEquipo(Long idEquipo);
+    List<ComponenteDTO> obtenerComponentesPorEquipo(Long idEquipo, String Username);
 
-    List<ComponenteDTO> obtenerTodosOut();
-    ComponenteDTO actualizarOut(Long id, RequestComponente requestComponente);
-    ComponenteDTO deleteOut(Long id);
+    ComponenteDTO actualizarOut(Long id, RequestComponente requestComponente, String username);
+    String deleteOut(Long id, String username);
 }

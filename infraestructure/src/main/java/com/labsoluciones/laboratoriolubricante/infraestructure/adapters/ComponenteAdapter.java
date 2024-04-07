@@ -16,10 +16,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -34,100 +32,132 @@ public class ComponenteAdapter implements ComponenteServiceOut {
         EquipoEntity equipo = equipoRepository.findById(requestComponente.getIdEquipo()).get();
         List<EquipoEntity> equiposPermitidos = obtenerEquiposPermitidos(username);
         if(equiposPermitidos.contains(equipo)){
-            componenteRepository.save(getEntity(requestComponente));
-            return componenteMapper.mapToDto(getEntity(requestComponente));
+            componenteRepository.save(getEntity(requestComponente, username));
+            return componenteMapper.mapToDto(getEntity(requestComponente, username));
         } else {
             throw  new RuntimeException("Equipo incorrecto");
         }
-
     }
 
-    private List<EquipoEntity> obtenerEquiposPermitidos(String username){
-        UsuarioEntity usuario = usuarioRepository.findByEmail(username).get();
-        ClienteEntity cliente = usuario.getCliente();
-        List<EquipoEntity> equiposPermitidos = equipoRepository.findByCliente(cliente);
-        return equiposPermitidos;
-    }
     @Override
     public Optional<ComponenteDTO> obtenerComponenteOut(Long id) {
         return Optional.ofNullable(componenteMapper.mapToDto(componenteRepository.findById(id).get()));
     }
 
     @Override
-    public List<ComponenteDTO> obtenerComponentesPorEquipo(Long idEquipo) {
+    public List<ComponenteDTO> obtenerComponentesPorEquipo(Long idEquipo, String username) {
+        List<EquipoEntity> equiposPermitidos = obtenerEquiposPermitidos(username);
         List<ComponenteDTO> componenteDTOList = new ArrayList<>();
-        EquipoEntity equipo = equipoRepository.findById(idEquipo).orElse(null);
-        List<ComponenteEntity> entities = componenteRepository.findByEquipo(equipo);
-        for (ComponenteEntity componente : entities) {
-            ComponenteDTO componenteDTO = componenteMapper.mapToDto(componente);
-            componenteDTOList.add(componenteDTO);
+        EquipoEntity equipo = equipoRepository.findById(idEquipo).
+                orElseThrow(() -> new NoSuchElementException("Equipo " + idEquipo + " no encontrado"));
+        if(equiposPermitidos.contains(equipo)){
+            List<ComponenteEntity> componentesPermitidos = obtenerComponentesPermitidos(equipo);
+            for(ComponenteEntity componente : componentesPermitidos){
+                ComponenteDTO componenteDTO = componenteMapper.mapToDto(componente);
+                componenteDTOList.add(componenteDTO);
+            }
+            return componenteDTOList;
+        } else {
+            throw new RuntimeException("Equipo " + idEquipo + " no encontrado");
         }
-        return componenteDTOList;
     }
 
     @Override
-    public List<ComponenteDTO> obtenerTodosOut() {
-        List<ComponenteDTO> componenteDTOList = new ArrayList<>();
-        List<ComponenteEntity> entities = componenteRepository.findAll();
-        for (ComponenteEntity componente : entities) {
-            ComponenteDTO componenteDTO = componenteMapper.mapToDto(componente);
-            componenteDTOList.add(componenteDTO);
+    public ComponenteDTO actualizarOut(Long id, RequestComponente requestComponente, String username) {
+        ComponenteEntity componente = componenteRepository.findById(id)
+                .orElseThrow(()-> new NoSuchElementException("Componente " + id + " no encontrado"));
+        List<EquipoEntity> equiposPermitidos = obtenerEquiposPermitidos(username);
+        boolean permitido = equiposPermitidos.contains(componente.getEquipo());
+        if(!permitido){
+            throw new RuntimeException("Componente " + id + " no encontrado");
         }
-        return componenteDTOList;
+        EquipoEntity equipoNuevo = equipoRepository.findById(requestComponente.getIdEquipo()).
+                orElseThrow(()-> new NoSuchElementException("Equipo " + requestComponente.getIdEquipo() + " incorrecto"));
+        if(!equiposPermitidos.contains(equipoNuevo)){
+            throw new RuntimeException("Equipo " + equipoNuevo.getIdEquipo() + " Incorrecto");
+        }
+        ComponenteEntity componenteActualizado = componenteRepository.save(
+                getEntityUpdate(
+                        componente,
+                        requestComponente,
+                        equipoNuevo,
+                        username)
+        );
+        return componenteMapper.mapToDto(componenteActualizado);
     }
 
     @Override
-    public ComponenteDTO actualizarOut(Long id, RequestComponente requestComponente) {
-        boolean existe = componenteRepository.existsById(id);
-        if (existe) {
-            Optional<ComponenteEntity> entity = componenteRepository.findById(id);
-            componenteRepository.save(getEntityUpdate(entity.get(), requestComponente));
+    public String deleteOut(Long id, String username) {
+        ComponenteEntity componente = componenteRepository.findById(id)
+                .orElseThrow(()-> new NoSuchElementException("Componente " + id + " no encontrado"));
+        List<EquipoEntity> equiposPermitidos = obtenerEquiposPermitidos(username);
+        boolean permitido = equiposPermitidos.contains(componente.getEquipo());
+        if(!permitido){
+            throw new RuntimeException("Componente " + id + " no encontrado");
         }
-        return null;
+        ComponenteEntity componenteEliminado = componenteRepository.save(
+                getEntityDelete(
+                        componente,
+                        username)
+        );
+        return "Componente " + id + " eliminado con éxito";
     }
 
-    @Override
-    public ComponenteDTO deleteOut(Long id) {
-        boolean existe = componenteRepository.existsById(id);
-        if (existe) {
-            Optional<ComponenteEntity> entity = componenteRepository.findById(id);
-            entity.get().setEstado(0);
-            entity.get().setUsuaDelet(Constants.AUDIT_ADMIN);
-            entity.get().setDateDelet(getTimestamp());
-            componenteRepository.save(entity.get());
-            return componenteMapper.mapToDto(entity.get());
-        }
-        return null;
-    }
-
-    private ComponenteEntity getEntity(RequestComponente requestComponente) {
+    private ComponenteEntity getEntity(RequestComponente requestComponente, String username) {
 //        EquipoEntity equipo = equipoRepository.findByNomEquipo(requestComponente.getNombreEquipo());
-
+        UsuarioEntity usuario = usuarioRepository.findByEmail(username).get();
         ComponenteEntity entity = new ComponenteEntity();
         entity.setNomComponente(requestComponente.getNombreComponente());
 //        entity.setEquipo(equipo);
         entity.setEstado(Constants.STATUS_ACTIVE);
-        entity.setUsuaCrea(Constants.AUDIT_ADMIN);
+        entity.setUsuaCrea(usuario.getIdUsuario().toString());
         entity.setDateCreate(getTimestamp());
         entity.setEquipo(equipoRepository.findById(requestComponente.getIdEquipo()).get());
         return entity;
     }
 
-    private ComponenteEntity getEntityUpdate(ComponenteEntity componenteActualizar,  RequestComponente requestComponente) {
-//        EquipoEntity equipo = equipoRepository.findByNomEquipo(requestComponente.getNombreEquipo());
-
+    private ComponenteEntity getEntityUpdate(ComponenteEntity componenteActualizar,
+                                             RequestComponente requestComponente,
+                                             EquipoEntity equipoNuevo,
+                                             String username) {
         ComponenteEntity entity = new ComponenteEntity();
         entity.setNomComponente(requestComponente.getNombreComponente());
-//        entity.setEquipo(equipo);
-        entity.setEstado(Constants.STATUS_ACTIVE);
-        entity.setUsuaModif(Constants.AUDIT_ADMIN);
+        entity.setEquipo(equipoNuevo);
+        entity.setUsuaModif(obtenerUsuario(username).getIdUsuario().toString());
         entity.setDateModif(getTimestamp());
         return entity;
     }
 
+    private ComponenteEntity getEntityDelete (ComponenteEntity componenteEliminar, String username) {
+        componenteEliminar.setEstado(0);
+        componenteEliminar.setUsuaDelet(obtenerUsuario(username).getIdUsuario().toString());
+        return componenteEliminar;
+    }
+
+
+
+    private List<EquipoEntity> obtenerEquiposPermitidos(String username){
+        Optional<UsuarioEntity> usuario = usuarioRepository.findByEmail(username);
+        ClienteEntity cliente = usuario.get().getCliente();
+        List<EquipoEntity> equiposCliente = equipoRepository.findByCliente(cliente);
+        return equiposCliente.stream()
+                .filter(equipo -> equipo.getEstado()==1)
+                .toList();
+    }
+
+    private List<ComponenteEntity> obtenerComponentesPermitidos(EquipoEntity equipo){
+        List<ComponenteEntity> componentesEquipo = componenteRepository.findByEquipo(equipo);
+        return componentesEquipo.stream()
+                .filter(componente -> componente.getEstado() == 1)
+                .toList();
+    }
     private Timestamp getTimestamp(){
         long currentTime = System.currentTimeMillis();
         Timestamp timestamp = new Timestamp(currentTime);
         return timestamp;
+    }
+
+    private UsuarioEntity obtenerUsuario(String username){
+        return usuarioRepository.findByEmail(username).get();
     }
 }

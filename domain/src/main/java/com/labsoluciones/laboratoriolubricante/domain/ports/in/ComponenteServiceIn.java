@@ -10,9 +10,8 @@ import java.util.Optional;
 public interface ComponenteServiceIn {
     ComponenteDTO crearComponenteIn(RequestComponente requestComponente, String username);
     Optional<ComponenteDTO> obtenerComponenteIn(Long id);
-    List<ComponenteDTO> obtenerTodosIn();
-    ComponenteDTO actualizarIn(Long id, RequestComponente requestComponente);
-    ComponenteDTO deleteIn(Long id);
+    ComponenteDTO actualizarIn(Long id, RequestComponente requestComponente, String username);
+    String deleteIn(Long id, String username);
 
-    List<ComponenteDTO> obtenerComponentesPorEquipo(Long idEquipo);
+    List<ComponenteDTO> obtenerComponentesPorEquipo(Long idEquipo, String username);
 }

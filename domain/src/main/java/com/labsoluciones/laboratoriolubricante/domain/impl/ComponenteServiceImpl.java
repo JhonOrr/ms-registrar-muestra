@@ -27,22 +27,17 @@ public class ComponenteServiceImpl implements ComponenteServiceIn {
     }
 
     @Override
-    public List<ComponenteDTO> obtenerTodosIn() {
-        return componenteServiceOut.obtenerTodosOut();
+    public ComponenteDTO actualizarIn(Long id, RequestComponente requestComponente, String username) {
+        return componenteServiceOut.actualizarOut(id, requestComponente, username);
     }
 
     @Override
-    public ComponenteDTO actualizarIn(Long id, RequestComponente requestComponente) {
-        return componenteServiceOut.actualizarOut(id, requestComponente);
+    public String deleteIn(Long id, String username) {
+        return componenteServiceOut.deleteOut(id, username);
     }
 
     @Override
-    public ComponenteDTO deleteIn(Long id) {
-        return componenteServiceOut.deleteOut(id);
-    }
-
-    @Override
-    public List<ComponenteDTO> obtenerComponentesPorEquipo(Long idEquipo) {
-        return componenteServiceOut.obtenerComponentesPorEquipo(idEquipo);
+    public List<ComponenteDTO> obtenerComponentesPorEquipo(Long idEquipo, String username) {
+        return componenteServiceOut.obtenerComponentesPorEquipo(idEquipo, username);
     }
 }

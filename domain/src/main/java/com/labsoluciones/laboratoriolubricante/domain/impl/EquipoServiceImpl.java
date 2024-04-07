@@ -21,8 +21,8 @@ public class EquipoServiceImpl implements EquipoServiceIn {
     }
 
     @Override
-    public Optional<EquipoDTO> obtenerEquipoIn(Long id) {
-        return equipoServiceOut.obtenerEquipoOut(id);
+    public Optional<EquipoDTO> obtenerEquipoIn(Long id, String username) {
+        return equipoServiceOut.obtenerEquipoOut(id, username);
     }
 
 
@@ -32,17 +32,13 @@ public class EquipoServiceImpl implements EquipoServiceIn {
     }
 
     @Override
-    public EquipoDTO actualizarIn(Long id, RequestEquipo requestEquipo) {
-        return equipoServiceOut.actualizarOut(id, requestEquipo);
+    public EquipoDTO actualizarIn(Long id, RequestEquipo requestEquipo, String username) {
+        return equipoServiceOut.actualizarOut(id, requestEquipo, username);
     }
 
     @Override
-    public EquipoDTO deleteIn(Long id) {
-        return equipoServiceOut.deleteOut(id);
+    public String deleteIn(Long id, String username) {
+        return equipoServiceOut.deleteOut(id, username);
     }
 
-    @Override
-    public List<EquipoDTO> obtenerEquiposPorCliente(Long idCliente) {
-        return equipoServiceOut.obtenerEquiposPorCliente(idCliente);
-    }
 }

@@ -10,7 +10,7 @@ import java.sql.Timestamp;
 @Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class EquipoDTO {
-    private Long idEquipo;
+    private String idEquipo;
     private String nomEquipo;
     private String marca;
     private String modelo;
@@ -22,5 +22,4 @@ public class EquipoDTO {
     private String usuaDelet;
     private Timestamp dateDelet;
     private String clienteRazonSocial;
-
 }

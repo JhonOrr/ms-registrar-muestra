@@ -9,10 +9,8 @@ import java.util.Optional;
 
 public interface EquipoServiceIn {
     EquipoDTO crearEquipoIn(RequestEquipo requestEquipo, String username);
-    Optional<EquipoDTO> obtenerEquipoIn(Long id);
+    Optional<EquipoDTO> obtenerEquipoIn(Long id, String username);
     List<EquipoDTO> obtenerTodosIn(String username);
-    EquipoDTO actualizarIn(Long id, RequestEquipo requestEquipo);
-    EquipoDTO deleteIn(Long id);
-
-    List<EquipoDTO> obtenerEquiposPorCliente(Long idCliente);
+    EquipoDTO actualizarIn(Long id, RequestEquipo requestEquipo, String username);
+    String deleteIn(Long id, String username);
 }

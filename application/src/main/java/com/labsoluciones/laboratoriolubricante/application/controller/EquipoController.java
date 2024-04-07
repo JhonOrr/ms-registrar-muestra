@@ -15,39 +15,65 @@ import java.util.List;
 @RequiredArgsConstructor
 public class EquipoController {
     private final EquipoServiceIn equipoServiceIn;
-
-    @PostMapping()
+    //crear un equipo
+    @PostMapping("/crear")
     public ResponseEntity<EquipoDTO> registrar(@RequestBody RequestEquipo requestEquipo,
                                                @RequestHeader("loggedInUser") String username) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(equipoServiceIn.crearEquipoIn(requestEquipo, username));
     }
-
-    @GetMapping("/delCliente/{idCliente}")
-    public ResponseEntity<List<EquipoDTO>> obtenerEquiposPorCliente(@PathVariable Long idCliente) {
-        List<EquipoDTO> equipos = equipoServiceIn.obtenerEquiposPorCliente(idCliente);
-        return ResponseEntity.ok(equipos);
-    }
-
-    @GetMapping("/todos")
+    //obtener todos los equiops
+    @GetMapping("/all")
     public ResponseEntity<List<EquipoDTO>> obtenerTodos (@RequestHeader("loggedInUser") String username) {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(equipoServiceIn.obtenerTodosIn(username));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<EquipoDTO>actualizar(@PathVariable Long id,@RequestBody RequestEquipo requestEquipo){
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(equipoServiceIn.actualizarIn(id,requestEquipo));
+    //obtener un equipo
+    @GetMapping("/{id}")
+    public ResponseEntity<?> obtenerEquipo(@PathVariable Long id, @RequestHeader("loggedInUser") String username){
+        try{
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(equipoServiceIn.obtenerEquipoIn(id, username));
+        } catch (Exception e){
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body(e.getMessage());
+        }
+
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<EquipoDTO> eliminar(@PathVariable Long id) {
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(equipoServiceIn.deleteIn(id));
+    //Actualizar Equipo
+    @PutMapping("/{id}/update")
+    public ResponseEntity<?>actualizar(@PathVariable Long id,
+                                               @RequestBody RequestEquipo requestEquipo,
+                                               @RequestHeader("loggedInUser") String username){
+        try{
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(equipoServiceIn.actualizarIn(id, requestEquipo, username));
+        } catch (Exception e){
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body("El equipo " + id + " es incorrecto");
+        }
+
+    }
+
+    //Eliminar Equipo
+    @DeleteMapping("/{id}/delete")
+    public ResponseEntity<String> eliminar(@PathVariable Long id, @RequestHeader("loggedInUser") String username) {
+        try{
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(equipoServiceIn.deleteIn(id, username));
+        } catch (Exception e){
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body("Equipo Incorrecto");
+        }
     }
 }
