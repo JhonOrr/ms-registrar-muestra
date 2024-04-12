@@ -28,7 +28,6 @@ import java.util.stream.Collectors;
 public class EquipoAdapters implements EquipoServiceOut {
 
     private final EquipoRepository equipoRepository;
-    private final ClienteRepository clienteRepository;
     private final EquipoMapper equipoMapper;
     private final UsuarioRepository usuarioRepository;
     private final ComponenteRepository componenteRepository;
